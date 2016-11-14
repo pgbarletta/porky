@@ -9,8 +9,10 @@ Hay q tener Julia 0.5 instalada. Estos repos suelen tener Julia actualizado.
 Seguir las instrucciones de la página p/ poder agregarlos e instalar Julia:
 `https://launchpad.net/~staticfloat/+archive/ubuntu/juliareleases`
 
-Luego, hay q instalar los siguientes paqutes en Julia: DataFrames, MIToS.PDB y Distributions
+Luego, hay q instalar los siguientes paqutes en Julia: DataFrames, MIToS.PDB y Distributions.
+
 P/ hacer eso:
+
 ```
 julia> Pkg.add("DataFrames")
 julia> Pkg.add("MIToS")
