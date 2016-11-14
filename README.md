@@ -9,7 +9,7 @@ Hay q tener Julia 0.5 instalada. Estos repos suelen tener Julia actualizado.
 Seguir las instrucciones de la página p/ poder agregarlos e instalar Julia:
 `https://launchpad.net/~staticfloat/+archive/ubuntu/juliareleases`
 
-Luego, hay q instalar los siguientes paqutes en Julia: DataFrames, MIToS.PDB y Distributions.
+Luego, hay q instalar los siguientes paqutes en Julia: DataFrames, MIToS.PDB, Distributions y ArgParse.
 
 P/ hacer eso:
 
@@ -17,21 +17,25 @@ P/ hacer eso:
 julia> Pkg.add("DataFrames")
 julia> Pkg.add("MIToS")
 julia> Pkg.add("Distributions")
+julia> Pkg.add("ArgParse")
 ```
 
 Usage:
 ---
-`./porky.jl <input PDB> <input vector> <multiplier> <output PDB> "AMBER mode number" "write_script"`
+`./porky.jl -p INPDB -v VECTOR -m MULTIPLIER -o OUTPDB [-i INDEX] [--script] 
 
 porky.jl lee modos de Calpha o modos all atom y desplaza la estructura original
-a lo largo del modo. El 5to argumento es opcional y solo debe ser ingresado
-cuando `input vector` sea un archivo de modos de PCA salido del `cpptraj` de
+a lo largo del modo. El 5to argumento (INDEX) es opcional y solo debe ser ingresado
+cuando `VECTOR` sea un archivo de modos de PCA salido del `cpptraj` de
 AMBER.
 
-Si `write_script` es `true`, escribe un script p/ Pymol llamado `script_porky.py`.
+Recomiendo usar el flag `--script` p/ q `porky.jl` escriba un script p/ Pymol llamado `script_porky.py`.
 De modo tal q luego de correr `porky.jl`, uno haga:
 ```
 pymol script_porky.py
 ```
+y así obtener el porcupine plot automáticamente.
 
-Si esto no se desea, el último argumento debe ser `false`
+---
+
+modevectors.py by Sean Law & Srinivasa

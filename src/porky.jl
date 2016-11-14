@@ -22,6 +22,7 @@
 using DataFrames
 using MIToS.PDB
 using Distributions
+using ArgParse
 ##########
 # functions
 ##########
@@ -125,58 +126,85 @@ function displaceAtoms(mod_pdb, vector1, multiplier)
    return pdb
 end
 #########
+# Arg Parse settings
+s = ArgParseSettings()
+@add_arg_table s begin
+    "--inpdb", "-p"
+        help = "Input PDB"
+        arg_type = ASCIIString
+        required = true
+    "--vector", "-v"
+        help = "Input vector"
+        arg_type = ASCIIString
+        required = true
+    "--multiplier", "-m"
+        help = "Constant to scale the normalized vector"
+        arg_type = Int
+        required = true
+    "--outpdb", "-o"
+        help = "Output PDB"
+        arg_type = ASCIIString
+        required = true
+    "--index", "-i"
+        help = "Mode number when reading cpptraj PCA modes"
+        arg_type = Int
+        default = 0
+    "--script"
+        help = "Only write output PDB"
+        action = :store_true
+end
 
 ##########
 # main program
 ##########
 
 # Read arguments from console
-message = string("\n\nUsage:\n",  "./porky.jl <input PDB> ",
-"<input vector or AMBER PCA> <multiplier> <output PDB> \"AMBER mode number\"", "\n\n")
-message_vec_not_found = string(" vector file not found \n\n")
-
-# Check for bad input
-if length(ARGS) < 3 || length(ARGS) > 5
-    throw(ArgumentError(message))
+parsed_args = parse_args(ARGS, s)
+args = Array{Any, 1}(0)
+for (arg, val) in parsed_args
+    arg=symbol(arg)
+    @eval (($arg) = ($val))
 end
+
+println(inpdb)
+println(vector)
+println(multiplier)
+println(outpdb)
+println(parsed_args["index"])
+println(typeof(parsed_args["index"]))
+println(script)
 
 # Get ready
 in_vec = Array{Float64, 1}
-in_pdb_filename = ARGS[1]
-in_vec_filename = ARGS[2]
-multiplier = ARGS[3]
-multiplier = parse(Int64, multiplier)
-out_pdb_filename = ARGS[4]
 
 # Read PDB
-in_pdb = read(string(in_pdb_filename), PDBFile, group="ATOM");
+in_pdb = read(string(inpdb), PDBFile, group="ATOM");
 nres_xyz = 3*length(in_pdb)
 natom_xyz = size(coordinatesmatrix(in_pdb))[1] * 3
 
-if length(ARGS) == 5
+if parsed_args["index"] != 0
 # Vector de PCA Amber
-    amber_idx = ARGS[5]
-    amber_idx = parse(Int64, amber_idx)
     try
-        in_vec = read_ptraj_modes(in_vec_filename, nres_xyz, true)[1][:, amber_idx]
+        in_vec = read_ptraj_modes(vector, nres_xyz, true)[1][:, index]
     catch
         try
-            in_vec = read_ptraj_modes(in_vec_filename, natom_xyz, true)[1][:, amber_idx]
+            in_vec = read_ptraj_modes(vector, natom_xyz, true)[1][:, index]
         end
     end
 else
 # Vector puro
-    in_vec = convert(Array{Float64}, readtable(in_vec_filename)[:, 1]);
+    in_vec = convert(Array{Float64}, readtable(vector)[:, 1]);
 end
 
 # In case input vector file is note found
 if in_vec == Array{Float64, 1}
-    throw(ArgumentError(string("\n\n", in_vec_filename, message_vec_not_found)))
+    throw(ArgumentError(string("\n\n", vector, message_vec_not_found)))
 end
 
 # Ahora desplazo
 if nres_xyz == length(in_vec)
 # El modo es de Calpha
+    in_vec = in_vec / norm(in_vec)
     out_pdb = displaceAA(in_pdb, in_vec, multiplier);
 
 elseif natom_xyz == length(test_vec)
@@ -184,23 +212,25 @@ elseif natom_xyz == length(test_vec)
     out_pdb = displaceAtoms(in_pdb, in_vec, multiplier);
 
 else
-# El modo no tiene el tamano adecuado
+# El modo no tiene el tamaño adecuado
     println("PDB and input vector don't match.")
     println("PDB has ", length(in_pdb) , " amino acids and ", size(coordinatesmatrix(in_pdb))[1] * 3, " atoms.")
     println("Vector has ", length(in_vec), " elements, which should correspond to ", length(in_vec) / 3, " particles.")
 end
 
 # Y guardo
-write(out_pdb_filename, out_pdb, PDBFile)
+write(outpdb, out_pdb, PDBFile)
 
 # Finalmente, hago el script
-load = "cmd.load(\""
-f = open("script_porky.py", "w")
-write(f, "from pymol.cgo import *\n")
-write(f, "from pymol import cmd\n\n")
-write(f, load, in_pdb_filename,"\")\n")
-write(f, load, out_pdb_filename,"\")\n")
-write(f, load,"modevectors.py\")\n")
-write(f, "modevectors(\"", in_pdb_filename[1:end-4], "\", \"", out_pdb_filename[1:end-4], "\", ")
-write(f, "outname=\"modevectors\", head=1.0, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\") ")
-close(f)
+if script == true
+    load = "cmd.load(\""
+    f = open("script_porky.py", "w")
+    write(f, "from pymol.cgo import *\n")
+    write(f, "from pymol import cmd\n\n")
+    write(f, load, inpdb,"\")\n")
+    write(f, load, outpdb,"\")\n")
+    write(f, load,"modevectors.py\")\n")
+    write(f, "modevectors(\"", inpdb[1:end-4], "\", \"", outpdb[1:end-4], "\", ")
+    write(f, "outname=\"modevectors\", head=1.0, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\") ")
+    close(f)
+end
