@@ -27,8 +27,8 @@ Usage
 `porky.jl` lee modos de Calpha o modos all atom y desplaza la estructura original
 a lo largo del modo. El archivo `VECTOR` puede ser:
 
-- Un archivo de modos de PCA salido del `cpptraj` de AMBER. En tal caso se debe incluir el argumento `INDEX` p/ especificar el índice del modo de interés
-- Un archivo de texto con el modo en 1 sola columna.
+- un archivo de modos de PCA salido del `cpptraj` de AMBER. En tal caso se debe incluir el argumento `INDEX` p/ especificar el índice del modo de interés
+- un archivo de texto con el modo en 1 sola columna.
 
 
 Recomiendo usar el flag `--script` p/ q `porky.jl` escriba un script p/ Pymol llamado `script_porky.py`.
