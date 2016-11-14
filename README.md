@@ -11,11 +11,11 @@ Seguir las instrucciones de la página p/ poder agregarlos e instalar Julia:
 
 Luego, hay q instalar los siguientes paqutes en Julia: DataFrames, MIToS.PDB y Distributions
 P/ hacer eso:
-
+```
 julia> Pkg.add("DataFrames")
 julia> Pkg.add("MIToS")
 julia> Pkg.add("Distributions")
-
+```
 
 Usage:
 ---
