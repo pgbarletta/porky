@@ -25,7 +25,7 @@ Usage
 `./porky.jl -p INPDB -v VECTOR -m MULTIPLIER -o OUTPDB [-i INDEX] [--script]`
 
 `porky.jl` lee modos de Calpha o modos all atom y desplaza la estructura original
-a lo largo del modo. El archivo `vector` puede ser:
+a lo largo del modo. El archivo `VECTOR` puede ser:
 
 - Un archivo de modos de PCA salido del `cpptraj` de AMBER. En tal caso se debe incluir el argumento `INDEX` p/ especificar el índice del modo de interés
 - Un archivo de texto con el modo en 1 sola columna.
