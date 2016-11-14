@@ -132,9 +132,9 @@ end
 
 # Read arguments from console
 message = string("\n\nUsage:\n",  "julia porky.jl <input PDB> ",
-"<input vector> <multiplier> <output PDB>", "\n\n")
+"<input vector or AMBER PCA> <multiplier> <output PDB> <AMBER mode number>::optional", "\n\n")
 
-if length(ARGS) < 3 || length(ARGS) > 4
+if length(ARGS) < 3 || length(ARGS) > 5
     throw(ArgumentError(message))
 end
 
@@ -144,11 +144,18 @@ in_vec_filename = ARGS[2]
 multiplier = ARGS[3]
 multiplier = parse(Int64, multiplier)
 out_pdb_filename = ARGS[4]
+if length(ARGS) == 5
+# Vector de PCA Amber
+    amber_idx = ARGS[5]
+    amber_idx = parse(Int64, amber_idx)
+    in_vec = read_ptraj_modes(file, modes_elements, norma::Bool=true)[:, amber_idx]
+else
+# Vector puro
+    in_vec = convert(Array{Float64}, readtable(string(main_dir, in_vec_filename))[:, 1]);
+end
 
-# Leo PDB, vector y multiplier
+# Leo PDB
 in_pdb = read(string(main_dir, in_pdb_filename), PDBFile, group="ATOM");
-in_vec = convert(Array{Float64}, readtable(string(main_dir, in_vec_filename))[:, 1]);
-
 
 # Ahora desplazo
 if 3*length(in_pdb) == length(in_vec)
