@@ -20,7 +20,7 @@ julia> Pkg.add("Distributions")
 julia> Pkg.add("ArgParse")
 ```
 
-Usage:
+Usage
 ---
 `./porky.jl -p INPDB -v VECTOR -m MULTIPLIER -o OUTPDB [-i INDEX] [--script]`
 
