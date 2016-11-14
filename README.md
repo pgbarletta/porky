@@ -21,9 +21,17 @@ julia> Pkg.add("Distributions")
 
 Usage:
 ---
-`./porky.jl <input PDB> <input vector> <multiplier> <output PDB> "AMBER mode number"`
+`./porky.jl <input PDB> <input vector> <multiplier> <output PDB> "AMBER mode number" "write_script"`
 
 porky.jl lee modos de Calpha o modos all atom y desplaza la estructura original
 a lo largo del modo. El 5to argumento es opcional y solo debe ser ingresado
-cuando `<input vector>` sea un archivo de modos de PCA salido del `cpptraj` de
+cuando `input vector` sea un archivo de modos de PCA salido del `cpptraj` de
 AMBER.
+
+Si `write_script` es `true`, escribe un script p/ Pymol llamado `script_porky.py`.
+De modo tal q luego de correr `porky.jl`, uno haga:
+```
+pymol script_porky.py
+```
+
+Si esto no se desea, el último argumento debe ser `false`
