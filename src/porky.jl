@@ -168,13 +168,13 @@ end
 # Append ".pdb" to output pdb
 outpdb = outpdb * ".pdb"
 
-println(inpdb)
-println(vector)
-println(multiplier)
-println(outpdb)
-println(parsed_args["index"])
-println(typeof(parsed_args["index"]))
-println(script)
+println("Input parameters:")
+println("INPDB          ", inpdb)
+println("VECTOR         ", vector)
+println("MULTIPLIER     ", multiplier)
+println("OUTPDB         ", outpdb)
+println("INDEX          ", parsed_args["index"])
+println("script?        ", script)
 
 # Get ready
 in_vec = Array{Float64, 1}
@@ -209,15 +209,15 @@ if nres_xyz == length(in_vec)
     in_vec = in_vec / norm(in_vec)
     out_pdb = displaceAA(in_pdb, in_vec, multiplier);
 
-elseif natom_xyz == length(test_vec)
+elseif natom_xyz == length(in_vec)
 # El modo es all-atom
     out_pdb = displaceAtoms(in_pdb, in_vec, multiplier);
 
 else
 # El modo no tiene el tamaño adecuado
-    println("PDB and input vector don't match.")
-    println("PDB has ", length(in_pdb) , " amino acids and ", size(coordinatesmatrix(in_pdb))[1] * 3, " atoms.")
-    println("Vector has ", length(in_vec), " elements, which should correspond to ", length(in_vec) / 3, " particles.")
+error("PDB and input vector don't match.\nPDB has ", length(in_pdb) ,
+" amino acids and ", size(coordinatesmatrix(in_pdb))[1] * 3, " atoms.\nVector has ",
+length(in_vec), " elements, which should correspond to ", length(in_vec) / 3, " particles.")
 end
 
 # Y guardo
