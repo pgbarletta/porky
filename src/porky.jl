@@ -1,4 +1,4 @@
-#!/home/german/julia-ae26b25d43/bin/julia
+#!/home/german/julia4/bin/julia
 ###############################################################################
 ###############   utility to displace a PDB along a vector   ##################
 #   code by pgbarletta
@@ -165,6 +165,8 @@ for (arg, val) in parsed_args
     arg=symbol(arg)
     @eval (($arg) = ($val))
 end
+# Append ".pdb" to output pdb
+outpdb = outpdb * ".pdb"
 
 println(inpdb)
 println(vector)
