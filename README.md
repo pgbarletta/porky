@@ -1,11 +1,6 @@
 Utility for porcupine plots
 ---------
-
-NOTE: MIToS no está actualizado p/ Julia v0.5, así q hay q usar el v0.47.
----
-Apenas se actualice, aviso.
----
-Hay q tener Julia 0.5 instalada. Estos repos suelen tener Julia actualizado.
+Hay q tener Julia >0.5 instalada. Estos repos suelen tener Julia actualizado.
 Seguir las instrucciones de la página p/ poder agregarlos e instalar Julia:
 `https://launchpad.net/~staticfloat/+archive/ubuntu/juliareleases`
 
