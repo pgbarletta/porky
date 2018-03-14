@@ -1,4 +1,4 @@
-Utility for porcupine plots
+Porcupine plots tool
 ---------
 Hay q tener Julia >0.5 instalada. Estos repos suelen tener Julia actualizado.
 Seguir las instrucciones de la página p/ poder agregarlos e instalar Julia:
