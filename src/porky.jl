@@ -178,7 +178,7 @@ println("VECTOR         ", vector)
 println("OUTPDB         ", outpdb)
 println("MULTIPLIER     ", multiplier)
 println("INDEX          ", index)
-println("SCRIPT        ", script)
+println("SCRIPT         ", script)
 
 # Get ready
 in_vec = Array{Float64, 1}
@@ -215,10 +215,11 @@ const out_frm = displaceAA(in_frm, aa, aa3, in_vec);
 out_trj = Trajectory(outpdb, 'w')
 write(out_trj, out_frm)
 
+const script_filename = string("script_porky_", splitext(outpdb)[1] ,".py")
 # Finalmente, hago el script
 if script == true
     load = "cmd.load(\""
-    f = open("script_porky.py", "w")
+    f = open(script_filename, "w")
     write(f, "from pymol.cgo import *\n")
     write(f, "from pymol import cmd\n\n")
     write(f, load, inpdb,"\")\n")
