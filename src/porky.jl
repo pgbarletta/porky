@@ -226,6 +226,6 @@ if script == true
     write(f, load, outpdb,"\")\n")
     write(f, load,"modevectors.py\")\n")
     write(f, "modevectors(\"", inpdb[1:end-4], "\", \"", outpdb[1:end-4], "\", ")
-    write(f, "outname=\"modevectors\", head=1.0, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\") ")
+    write(f, "outname=\"modevectors\", head=1.0, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\"), cutoff=2.0 ")
     close(f)
 end
