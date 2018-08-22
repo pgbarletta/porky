@@ -147,8 +147,8 @@ s = ArgParseSettings()
         required = true
     "--multiplier", "-m"
         help = "Constant to scale the normalized vector. Defaults to 1"
-        arg_type = Int
-        default = 1
+        arg_type = Float64
+        default = 1.
     "--index", "-i"
         help = "Mode number when reading cpptraj PCA modes"
         arg_type = Int
@@ -226,6 +226,6 @@ if script == true
     write(f, load, outpdb,"\")\n")
     write(f, load,"modevectors.py\")\n")
     write(f, "modevectors(\"", inpdb[1:end-4], "\", \"", outpdb[1:end-4], "\", ")
-    write(f, "outname=\"modevectors\", head=1.0, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\", cutoff=2.0 )")
+    write(f, "outname=\"modevectors\", head=0.5, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\", cutoff=3.0)")
     close(f)
 end
