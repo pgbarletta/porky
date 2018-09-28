@@ -21,13 +21,13 @@
 ###############################################################################
 using Chemfiles
 using StaticArrays
-using ArgParse
+using ArgParse, LinearAlgebra, DelimitedFiles
 ##########
 # functions
 ##########
 function read_ptraj_modes(filename, nmodes::Int64=0, norma::Bool=true)
     modes_text = readdlm(filename, skipstart=0, skipblanks=true, comments=true,
-        comment_char='\*')
+        comment_char='*')
 
     if nmodes == 0
         nmodes = modes_text[1, 5]
@@ -38,10 +38,10 @@ function read_ptraj_modes(filename, nmodes::Int64=0, norma::Bool=true)
     lines = ceil(Int64, ncoords/7)
     rest = convert(Int64, ncoords % 7)
 
-    eval = Array{Float64}(nmodes);
-    mode = Array{Float64}(ncoords, nmodes);
-    temp1 = Array{Float64}(ncoords, 1);
-    temp2 = Array{Float64}(ncoords+(7-rest));
+    eval = Array{Float64}(undef, nmodes);
+    mode = Array{Float64}(undef, ncoords, nmodes);
+    temp1 = Array{Float64}(undef, ncoords, 1);
+    temp2 = Array{Float64}(undef, ncoords+(7-rest));
 
     j=lines + 1 + 2 # 1 p/ q lea la prox linea 2 por el header
     for i=1:nmodes
@@ -66,23 +66,23 @@ end
 #########
 function displaceAA(in_frm, aa, aa_3, in_vec)
     # Preparo variables
-    const in_top = Topology(in_frm)
+    in_top = Topology(in_frm)
     natoms = convert(Int64, size(in_top))
-    const in_xyz = positions(in_frm)
+    in_xyz = positions(in_frm)
 
     # Determino orden de residuos (hay q actualizar el Julia Chemfiles)
-    tmp = Array{Int64}(aa)
-    ids = Array{Int64}(aa)
+    tmp = Array{Int64}(undef, aa)
+    ids = Array{Int64}(undef, aa)
     [ ids[i+1] = convert(Int64, id((Residue(in_top, i)))) for i = 0:aa-1 ]
-    const idx = sortperm(ids)
+    idx = sortperm(ids)
     # Determino el nro de atomos de c/ aminoácido
     [ tmp[i+1] = size(Residue(in_top, i)) for i = 0:aa-1 ]
-    const natom_aa = tmp[idx]
+    natom_aa = tmp[idx]
 
     # Paso el vector columna de tamaño 1xaa_3 a 3xaa
-    const vector = reshape(in_vec, 3, aa)
+    vector = reshape(in_vec, 3, aa)
     # Adapto el vector p/ darle la misma forma q la matriz de coordenadas
-    sum_mat = Array{Float64}(3, natoms)
+    sum_mat = Array{Float64}(undef, 3, natoms)
     cursor = 0
     for i = 1:aa
         if i == 1
@@ -90,7 +90,7 @@ function displaceAA(in_frm, aa, aa_3, in_vec)
             cursor = natom_aa[i]
             continue
         end
-        const rango = collect(cursor+1:cursor + natom_aa[i])
+        rango = collect(cursor+1:cursor + natom_aa[i])
         sum_mat[:, rango] = repmat(vector[:, i], 1, natom_aa[i])
         cursor += natom_aa[i]
     end
@@ -106,28 +106,6 @@ function displaceAA(in_frm, aa, aa_3, in_vec)
         end
     end
     return out_frm
-end
-#########
-function displaceAtoms(mod_pdb, vector1, multiplier)
-  # Preparo variables
-    pdb = copy(mod_pdb)
-    struct_xyz = coordinatesmatrix(pdb)
-#    new_struct_xyz = copy(struct_xyz)
-    vector = Array{Float64}(1, 3)
-
-    # Adapto el vector p/ darle la misma forma q la matriz de coordenadas
-    for i=1:3:length(vector1)
-        if i== 1
-            vector = reshape(vector1[i:i+2], 1, 3)
-            continue
-        end
-        vector = vcat(vector, reshape(vector1[i:i+2], 1, 3))
-    end
-
-    # Listo, ahora puedo mover el pdb
-    new_struct_xyz  = struct_xyz + vector .* multiplier
-    pdb = change_coordinates(pdb, new_struct_xyz);
-   return pdb
 end
 #########
 # Arg Parse settings
@@ -164,7 +142,7 @@ end
 
 # Read arguments from console
 parsed_args = parse_args(ARGS, s)
-args = Array{Any, 1}(0)
+args = Array{Any, 1}(undef, 0)
 for (arg, val) in parsed_args
     arg = Symbol(arg)
     @eval (($arg) = ($val))
