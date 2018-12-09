@@ -114,7 +114,7 @@ if (index == 0)
     end
 else
     try
-        in_modes, in_evals = read_ptraj_modes(vector, index)
+        in_modes, in_evals = JUMD.readPtrajModes(vector, index)
         global in_vec = convert(Array{Float64,1}, in_modes[:, index])
     catch e
         println(vector, " error:")
