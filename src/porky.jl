@@ -139,6 +139,6 @@ if script == true
     write(f, load, outpdb, "\")\n")
     write(f, load, "modevectors.py\")\n")
     write(f, "modevectors(\"", inpdb[1:end - 4], "\", \"", outpdb[1:end - 4], "\", ")
-    write(f, "outname=\"modevectors\", head=0.5, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\", cutoff=3.0)")
+    write(f, "outname=\"", string(splitext(outpdb)[1], "_porky"), "\", head=0.5, tail=0.3, headrgb = \"1.0, 1.0, 0.0\", tailrgb = \"1.0, 1.0, 0.0\", cutoff=3.0)\n")
     close(f)
 end
