@@ -138,7 +138,7 @@ if script == true
     write(f, load, inpdb, "\")\n")
     write(f, load, outpdb, "\")\n")
     write(f, load, "modevectors.py\")\n")
-    write(f, "rgb=\"1.0, .5, .5   \"\n")
+    write(f, "rgb=\".9, .5, .5\"\n")
     write(f, "modevectors(\"", inpdb[1:end - 4], "\", \"", outpdb[1:end - 4], "\", ")
     write(f, "outname=\"", string(splitext(outpdb)[1], "_porky"), "\", head=0.5, tail=0.3, headrgb = rgb, tailrgb = rgb, cutoff=3.0)\n")
     close(f)
