@@ -76,6 +76,18 @@ s = ArgParseSettings()
     "--script", "-s"
     help = "Only write output PDB"
     action = :store_true
+    "--red", "-r"
+    help = "Red color for modevectors arrows. Defaults to 1."
+    arg_type = Float64
+    default = 1.
+    "--green", "-g"
+    help = "Green color for modevectors arrows. Defaults to 1."
+    arg_type = Float64
+    default = 1.
+    "--blue", "-b"
+    help = "Blue color for modevectors arrows. Defaults to 1."
+    arg_type = Float64
+    default = 1.
 end
 
 # Read arguments from console
@@ -131,6 +143,7 @@ write(out_trj, out_frm)
 const script_filename = string("script_porky_", splitext(outpdb)[1], ".py")
 # Finalmente, hago el script
 if script == true
+    rgb = string(red, ", ", green, ", ", blue)
     load = "cmd.load(\""
     f = open(script_filename, "w")
     write(f, "from pymol.cgo import *\n")
@@ -138,7 +151,7 @@ if script == true
     write(f, load, inpdb, "\")\n")
     write(f, load, outpdb, "\")\n")
     write(f, load, "modevectors.py\")\n")
-    write(f, "rgb=\".9, .5, .5\"\n")
+    write(f, "rgb=\"", rgb, "\"\n")
     write(f, "modevectors(\"", inpdb[1:end - 4], "\", \"", outpdb[1:end - 4], "\", ")
     write(f, "outname=\"", string(splitext(outpdb)[1], "_porky"), "\", head=0.5, tail=0.3, headrgb = rgb, tailrgb = rgb, cutoff=3.0)\n")
     close(f)
