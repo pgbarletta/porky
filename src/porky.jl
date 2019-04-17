@@ -140,8 +140,8 @@ if (vector != "none")
     println("BLUE", "\t", blue)
 elseif (matrix != "none")
     println("MATRIX", "\t", matrix)
-    println("INDEX", "\t", index_min)
-    println("INDEX", "\t", index_max)
+    println("INDEX_MIN", "\t", index_min)
+    println("INDEX_MAX", "\t", index_max)
     println("AMBER_FORMAT", "\t", amber_format)
 end
 
