@@ -162,7 +162,7 @@ end
 
 # Get ready
 in_vec = Array{Float64,1}
-in_vecs = Array{Float64,2}
+in_vec = Array{Float64,2}
 # Read PDB
 const in_trj = Trajectory(inpdb)
 const in_frm = read(in_trj)
@@ -182,7 +182,7 @@ else
         if (amber_format)
             try
                 in_modes, in_evals = JUMD.readPtrajModes(matrix, index_max)
-                global in_vecs = convert(Array{Float64,2}, in_modes[:, index_min:index_max])
+                global in_vec = convert(Array{Float64,2}, in_modes[:, index_min:index_max])
             catch e
                 println(matrix, " error:")
                 error(e)
@@ -190,7 +190,7 @@ else
         else
             try
                 in_modes = convert(Array{Float64,2}, readdlm(matrix))
-                global in_vecs = in_modes[:, index_min:index_max]
+                global in_vec = in_modes[:, index_min:index_max]
             catch e
                 println(matrix, " error:")
                 error(e)
@@ -201,8 +201,8 @@ else
     end
 end
 
-if(size(in_vecs)[1] != aa3)
-    error("Size of vector: ", size(in_vecs)[1], " does not match number of residues: ", aa3)
+if(size(in_vec)[1] != aa3)
+    error("Size of vector: ", size(in_vec)[1], " does not match number of residues: ", aa3)
 end
 
 if (matrix == "none")
@@ -218,9 +218,9 @@ if (matrix == "none")
         write_porcu_script(script_filename, inpdb, outpdb, red, green, blue)
     end
 else
-    for i = 1:size(in_vecs)[2]
-        in_vec = in_vecs[:, i] ./ norm(in_vecs[:, i]) .* multiplier
-        out_frm = displaceAA(in_frm, aa, aa3, in_vec);
+    for i = 1:size(in_vec)[2]
+        vec = in_vec[:, i] ./ norm(in_vec[:, i]) .* multiplier
+        out_frm = displaceAA(in_frm, aa, aa3, vec);
         # Y guardo
         out_pdb = string(i) * "_" * outpdb
         out_trj = Trajectory(out_pdb, 'w')
