@@ -59,7 +59,7 @@ function write_porcu_script(script::String, inpdb::String, outpdb::String, red::
     write(f, load, outpdb, "\")\n")
     write(f, load, "modevectors.py\")\n")
     write(f, "rgb=\"", rgb, "\"\n")
-    write(f, "modevectors(\"", inpdb[1:end - 4], "\", \"", outpdb[1:end - 4], "\", ")
+    write(f, "modevectors(\"", basename(inpdb)[1:end - 4], "\", \"", outpdb[1:end - 4], "\", ")
     write(f, "outname=\"", string(splitext(outpdb)[1], "_porky"), "\", head=0.5, tail=0.3, headrgb = rgb, tailrgb = rgb, cutoff=3.0)\n")
     write(f, "cmd.delete(\"", outpdb[1:end - 4], "\")\n")
     close(f)
@@ -207,31 +207,30 @@ end
 
 if (matrix == "none")
     in_vec = in_vec ./ norm(in_vec) .* multiplier
-    out_frm = displaceAA(in_frm, aa, aa3, in_vec);
+    local out_frm = displaceAA(in_frm, aa, aa3, in_vec);
     # Y guardo
-    out_trj = Trajectory(outpdb, 'w')
+    local out_trj = Trajectory(outpdb, 'w')
     write(out_trj, out_frm)
     close(out_trj)
 
     if script == true
-        script_filename = string("script_porky_", splitext(outpdb)[1], ".py")
+        local script_filename = string("script_porky_", splitext(outpdb)[1], ".py")
         write_porcu_script(script_filename, inpdb, outpdb, red, green, blue)
     end
 else
     for i = 1:size(in_vec)[2]
         vec = in_vec[:, i] ./ norm(in_vec[:, i]) .* multiplier
-        out_frm = displaceAA(in_frm, aa, aa3, vec);
+        local out_frm = displaceAA(in_frm, aa, aa3, vec);
         # Y guardo
         out_pdb = string(i) * "_" * outpdb
-        out_trj = Trajectory(out_pdb, 'w')
+        local out_trj = Trajectory(out_pdb, 'w')
         write(out_trj, out_frm)
         close(out_trj)
 
         if script == true
-            script_filename = string("script_porky_", splitext(out_pdb)[1], ".py")
+            local script_filename = string("script_porky_", splitext(out_pdb)[1], ".py")
             write_porcu_script(script_filename, inpdb, out_pdb, rand(), rand(), rand())
         end
     end
 end
-
 
